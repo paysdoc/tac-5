@@ -72,6 +72,17 @@ export const api = {
     });
   },
   
+  // Generate random query
+  async generateRandomQuery(): Promise<RandomQueryResponse> {
+    return apiRequest<RandomQueryResponse>('/generate-random-query', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+  },
+
   // Health check
   async healthCheck(): Promise<HealthCheckResponse> {
     return apiRequest<HealthCheckResponse>('/health');

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeQueryInput();
   initializeFileUpload();
   initializeModal();
+  initializeRandomQueryButton();
   loadDatabaseSchema();
 });
 
@@ -45,6 +46,35 @@ function initializeQueryInput() {
   queryInput.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       queryButton.click();
+    }
+  });
+}
+
+// Random Query Button Functionality
+function initializeRandomQueryButton() {
+  const randomQueryButton = document.getElementById('random-query-button') as HTMLButtonElement;
+  const queryInput = document.getElementById('query-input') as HTMLTextAreaElement;
+
+  randomQueryButton.addEventListener('click', async () => {
+    randomQueryButton.disabled = true;
+    const originalText = randomQueryButton.textContent;
+    randomQueryButton.innerHTML = '<span class="loading"></span>';
+
+    try {
+      const response = await api.generateRandomQuery();
+
+      if (response.error) {
+        displayError(response.error);
+      } else {
+        // Populate the query input field with generated query (override existing content)
+        queryInput.value = response.query;
+        queryInput.focus();
+      }
+    } catch (error) {
+      displayError(error instanceof Error ? error.message : 'Failed to generate random query');
+    } finally {
+      randomQueryButton.disabled = false;
+      randomQueryButton.textContent = originalText || 'Generate Random Query';
     }
   });
 }
