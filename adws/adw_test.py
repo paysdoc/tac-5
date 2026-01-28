@@ -63,20 +63,34 @@ MAX_E2E_TEST_RETRY_ATTEMPTS = 2  # E2E ui tests
 def check_env_vars(logger: Optional[logging.Logger] = None) -> None:
     """Check that all required environment variables are set."""
     required_vars = [
-        "ANTHROPIC_API_KEY",
         "CLAUDE_CODE_PATH",
     ]
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    optional_vars = [
+        "ANTHROPIC_API_KEY",
+    ]
+    missing_required = [var for var in required_vars if not os.getenv(var)]
+    missing_optional = [var for var in optional_vars if not os.getenv(var)]
 
-    if missing_vars:
+    if missing_optional:
+        warn_msg = "Warning: Missing optional environment variables:"
+        if logger:
+            logger.warning(warn_msg)
+            for var in missing_optional:
+                logger.warning(f"  - {var}")
+        else:
+            print(warn_msg, file=sys.stderr)
+            for var in missing_optional:
+                print(f"  - {var}", file=sys.stderr)
+
+    if missing_required:
         error_msg = "Error: Missing required environment variables:"
         if logger:
             logger.error(error_msg)
-            for var in missing_vars:
+            for var in missing_required:
                 logger.error(f"  - {var}")
         else:
             print(error_msg, file=sys.stderr)
-            for var in missing_vars:
+            for var in missing_required:
                 print(f"  - {var}", file=sys.stderr)
         sys.exit(1)
 
