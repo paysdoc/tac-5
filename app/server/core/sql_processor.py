@@ -1,8 +1,8 @@
 import sqlite3
 from typing import Dict, Any
 from .sql_security import (
-    execute_query_safely, 
-    validate_sql_query, 
+    execute_query_safely,
+    validate_sql_query,
     SQLSecurityError
 )
 
